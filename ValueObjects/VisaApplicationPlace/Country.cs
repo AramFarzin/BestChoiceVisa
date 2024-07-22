@@ -1,0 +1,1 @@
+public record Country(string Name, int Code);

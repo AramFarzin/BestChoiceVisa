@@ -1,0 +1,1 @@
+public record VisaType(string Name, string Description, int MinimumDuration, int MaximumDuration);
