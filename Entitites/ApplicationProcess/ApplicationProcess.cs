@@ -12,34 +12,48 @@ public sealed class ApplicationProcess : Entity
     public ProcessType ProcessType { get; private set; }
 
     [Required]
-    public int MinProcessingTime  { get; private set; } 
+    public int MinProcessingDays  { get; private set; }  = 0;
     
     [Required]
-    public int MaxProcessingTime  { get; private set; } 
+    public int MaxProcessingDays  { get; private set; }  = 0;
     
     [Required]
-    public string Instructions  { get; private set; } 
+    public string Instructions  { get; private set; } = string.Empty;
 
-    public ApplicationProcess(Guid id,
+    private ApplicationProcess(Guid id,
                               Guid embassyId,
                               ProcessType processType,
-                              int minProcessingTime,
-                              int maxProcessingTime,
+                              int minProcessingDays,
+                              int maxProcessingDays,
                               string instructions) : base(id)
     {
         EmbassyId = embassyId;
         ProcessType = processType;
-        MinProcessingTime = minProcessingTime;
-        MaxProcessingTime = maxProcessingTime;
+        MinProcessingDays = minProcessingDays;
+        MaxProcessingDays = maxProcessingDays;
         Instructions = instructions ;
     }
 
-    public void Edit(ProcessType processType, int minProcessingTime, int maxProcessingTime, string instructions)
+    public static ApplicationProcess Create(Guid embassyId,
+                        ProcessType processType,
+                        int minProcessingDays,
+                        int maxProcessingDays,
+                        string instructions)
+    {
+        return  new ApplicationProcess(new Guid(),
+                                        embassyId,
+                                        processType,
+                                        minProcessingDays,
+                                        maxProcessingDays,
+                                        instructions);
+    }
+
+    public void Edit(ProcessType processType, int minProcessingDays, int maxProcessingDays, string instructions)
     {
         ProcessType = processType;
-        MinProcessingTime = minProcessingTime;
-        MaxProcessingTime = maxProcessingTime;
+        MinProcessingDays = minProcessingDays;
+        MaxProcessingDays = maxProcessingDays;
         Instructions = instructions;
-    }
+    }   
 }
 

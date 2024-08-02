@@ -6,15 +6,15 @@ public abstract class ProcessingCenter: Entity
 {
 
     [Required]
-    public string Name { get; private  set; }
+    protected string Name { get; private  set; } = string.Empty;
     
     [Required]
-    public Address Address { get; private set; }
+    protected Address Address { get; private set; }
     
     [Required]
-    public ContactInfo ContactInfo { get; private set; }
+    protected ContactInfo ContactInfo { get; private set; }
     
-    public ProcessingCenter(Guid id,
+    protected ProcessingCenter(Guid id,
                                 string name,
                                 Address address,
                                 ContactInfo contactInfo) : base(id)

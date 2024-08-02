@@ -1,55 +1,134 @@
 using Domain.Entities;
+using Domain.Repositories;
 using Domain.ValueObjects;
 
 namespace Domain.Services;
 public class VisaService : IVisaService
 {
-    public async Task<int> CalculateScoreAsync(Guid id, IEnumerable<AnswerScore> scores)
+    
+    private readonly IVisaRepository _visaRepository ;
+    private readonly IUnitOfWork _unitOfWork;
+
+    public VisaService(IVisaRepository visaRepository, IUnitOfWork unitOfWork)
     {
-        // check if visa does exist
-       // TODO
+        _visaRepository = visaRepository;
+        _unitOfWork = unitOfWork;
+    }
+
+    public static int CalculateScore(IEnumerable<AnswerScore> scores)
+    {
         return scores.Sum(s => s.Score);
     }
 
-    public Task CreateVisaAsync(VisaType visaType, Guid applicationProcessId, decimal fees, int minimumScore, IEnumerable<Condition> conditionList, IEnumerable<Criteria> criteriaList)
+    public async Task CreateVisaAsync(VisaType visaType,
+                Country country,
+                Guid applicationProcessId,
+                Money fees,
+                int minimumScore)
     {
-        // check if visaType needs to be created
-        // Question needs to be created
-        // Answerscore needs to be created
-        // Conditions needs to be created
-        // criteriaList needs to be created
-        // visa need to be created
-        throw new NotImplementedException();
+       await _visaRepository.AddAsync(Visa.Create(visaType, country , applicationProcessId , fees, minimumScore));
+       await _unitOfWork.SavechangesAsync(CancellationToken.None);
     }
 
-    public Task EditAsync(Visa visa)
+    public async Task EditAsync(Visa visa)
     {
-        // check if visa does exist
-        // UpdateAsync visa
-        throw new NotImplementedException();
+        Visa currentVisa = await _visaRepository.GetByIdAsync(visa.Id);
+        if(currentVisa == null)
+        {   
+            //throw Exception
+            throw new Exception();
+        }
+        await _visaRepository.UpdateAsync(currentVisa);
+        await _unitOfWork.SavechangesAsync(CancellationToken.None);
     }
 
-    public Task<IEnumerable<Visa>> GetAllVisaByCountryAsync(Country country)
-    {
-        // check if Country does exist
-        throw new NotImplementedException();
-    }
 
-    public Task<IEnumerable<Condition>> GetVisasByAnswersAsync(IEnumerable<AnswerScore> answerScore, int score)
+    public async Task<IEnumerable<Visa>> GetVisaListAsync(IEnumerable<AnswerScore> answerScore)
     {
         // check if answerScores do exist
-        throw new NotImplementedException();
+        var score = CalculateScore(answerScore);
+
+        var visas = await  _visaRepository.GetAsync();
+        if(visas == null || visas.Count == 0)
+        {
+            //throw Exception
+            throw new Exception();
+        }
+        else
+        {
+            return visas.Where(v => v.MinimumScore <= score);
+        }
     }
 
-    public Task ReopendAsync(Guid id)
+    public async Task<IEnumerable<Visa>> GetVisaListAsync(Country? country, VisaType? visaType)
     {
-        // check if visa does exist
-        throw new NotImplementedException();
+        var visas = await  _visaRepository.GetAsync();
+        if(visas == null || visas.Count == 0)
+        {
+            //throw Exception
+            throw new Exception();
+        }
+        else
+        {
+            return visas.Where(v => v.Country == (country ?? v.Country) && v.VisaType == (visaType ?? v.VisaType));
+        }
+    }
+    
+    public async Task ReopendAsync(Guid id)
+    {
+        Visa visa = await _visaRepository.GetByIdAsync(id);
+        if(visa == null)
+        {   
+            //throw Exception
+            throw new Exception();
+        }
+        visa.GetOpened();
     }
 
-    public Task SuspendAsync(Guid id)
+    public async Task SuspendAsync(Guid id, string reasonOfSuspending)
     {
-        // check if visa does exist
-        throw new NotImplementedException();
+       Visa visa = await _visaRepository.GetByIdAsync(id);
+        if(visa == null)
+        {   
+            //throw Exception
+            throw new Exception();
+        }
+        visa.GetSuspended(reasonOfSuspending);
+    }
+
+    public async Task<IEnumerable<Question>> GetQuestionListAsync(IEnumerable<Country>? countryList, IEnumerable<VisaType>? visaTypeList)
+    {
+        // TODO:
+        // check if answerScores do exist
+        List<Question> QuestionList = new List<Question>();
+
+        countryList = countryList?? null;// GetAllCountries();
+        visaTypeList = visaTypeList?? null;//GetAllvisaTypeList();
+
+
+
+        foreach (var country in countryList)
+        {
+            foreach (var visaType in visaTypeList)
+            {
+                var visas = await GetVisaListAsync(country, visaType);
+                
+                QuestionList.AddRange(await GetQuestionListAsync(visas));
+            }
+        }   
+
+        return QuestionList;     
+    }
+
+    public async Task<IEnumerable<Question>> GetQuestionListAsync(IEnumerable<Visa> visaList)
+    {
+        var QuestionList = new List<Question>();
+        foreach (var visa in visaList)
+        {
+            var conditionList = await _visaRepository.GetConditionListAsync(visa.Id);
+            QuestionList.AddRange(conditionList.Select(c => c.Question));
+        }
+
+        return QuestionList;
     }
 }

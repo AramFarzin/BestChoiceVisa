@@ -6,9 +6,9 @@ public sealed class Embassy : ProcessingCenter
     [Required]
     public Country Country { get; private set; }
     public bool IsSuspended { get; private set; } = false;
-    public string ReasonOfSuspending { get; private set; } = "";
+    public string ReasonOfSuspending { get; private set; } = string.Empty;
 
-    public Embassy(Guid id,
+    private Embassy(Guid id,
                    string name,
                    Address address,
                    ContactInfo contactInfo,
@@ -16,6 +16,18 @@ public sealed class Embassy : ProcessingCenter
     {
         Country = country;
     }
+
+    public static Embassy Create(string name,
+                   Address address,
+                   ContactInfo contactInfo,
+                   Country country)
+    {
+        return new Embassy(new Guid(),
+                            name, 
+                            address,
+                            contactInfo, 
+                            country);
+   }
 
     public void GetSuspended(string reason)
     {
@@ -30,7 +42,7 @@ public sealed class Embassy : ProcessingCenter
     {
         if(IsSuspended)
         {
-            ReasonOfSuspending = "";
+            ReasonOfSuspending = string.Empty;
             IsSuspended = false;
         }
     }

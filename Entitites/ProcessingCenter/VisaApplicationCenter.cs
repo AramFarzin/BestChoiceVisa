@@ -4,24 +4,33 @@ namespace Domain.Entities;
 public sealed class VisaApplicationCenter : ProcessingCenter
 {
     [Required]
-    public List<Guid> EmbassyIds  { get; private set; }
+    private HashSet<Country> CountryList  { get; init; } = new();
 
-    public VisaApplicationCenter(Guid id,
+    private VisaApplicationCenter(Guid id,
                                  string name,
                                  Address address,
-                                 ContactInfo contactInfo,
-                                 List<Guid> embessyIds) : base(id, name, address, contactInfo)
+                                 ContactInfo contactInfo) : base(id, name, address, contactInfo)
     {
-        EmbassyIds = embessyIds;
     }
 
-    public void AddEmbassy(Guid embessyId)
+    public static VisaApplicationCenter Create(string name,
+                                                Address address,
+                                                ContactInfo contactInfo)
     {
-        EmbassyIds.Add(embessyId) ;
+        return new VisaApplicationCenter(new Guid(),
+                                            name,
+                                            address,
+                                            contactInfo);
+
+    }
+
+    public void Add(Country country)
+    {
+        CountryList.Add(country);
     }
     
-    public void RemoveEmbassy(Guid embessyId)
+    public void Remove(Country country)
     {
-        EmbassyIds.Remove(embessyId) ;
+        CountryList.Remove(country);
     }
 }

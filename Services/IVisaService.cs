@@ -4,17 +4,16 @@ using Domain.ValueObjects;
 namespace Domain.Services;
 public interface IVisaService
 {
-    Task<int> CalculateScoreAsync(Guid id, IEnumerable<AnswerScore> scores);
-    Task<IEnumerable<Condition>> GetVisasByAnswersAsync(IEnumerable<AnswerScore> answerScore, int score);
-    Task<IEnumerable<Visa>> GetAllVisaByCountryAsync(Country country);
     Task CreateVisaAsync(VisaType visaType,
+                Country country,
                 Guid applicationProcessId,
-                Decimal fees,
-                int minimumScore,
-                IEnumerable<Condition> conditionList, 
-                IEnumerable<Criteria> criteriaList);
+                Money fees,
+                int minimumScore);
 
-    Task SuspendAsync(Guid id);
+    Task SuspendAsync(Guid id, string reasonOfSuspending);
     Task ReopendAsync(Guid id);
+    Task<IEnumerable<Question>> GetQuestionListAsync(IEnumerable<Visa> visaList);
+    Task<IEnumerable<Visa>> GetVisaListAsync(Country? country, VisaType? visaType);
+    Task<IEnumerable<Visa>> GetVisaListAsync(IEnumerable<AnswerScore> answerScore);
 }
 

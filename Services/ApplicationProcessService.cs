@@ -16,7 +16,7 @@ public class ApplicationProcessService : IApplicationProcessService
 
     public async Task  CreateApplicationProcessAsync(Guid embassyId, ProcessType processType, int minProcessingTime, int maxProcessingTime, string instructions)
     {
-        var process = new ApplicationProcess(Guid.NewGuid(), embassyId, processType, minProcessingTime, maxProcessingTime, instructions);
+        var process = ApplicationProcess.Create(embassyId, processType, minProcessingTime, maxProcessingTime, instructions);
         await _applicationProcessRepository.AddAsync(process);
     }
 

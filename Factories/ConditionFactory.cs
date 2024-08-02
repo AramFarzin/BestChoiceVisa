@@ -2,12 +2,21 @@ using Domain.ValueObjects;
 
 namespace Domain.Factories
 {
-    public class ConditionFactory
+    internal class ConditionFactory
     {
-        public Condition Create(string description, Question question, List<AnswerScore> asnwers, bool isRequired)
+        internal Condition Create(string description, Question question, List<AnswerScore> asnwers, bool isRequired)
         {
+            // Question needs to be created
+            // QuestionFactory.Create(question);
+
+            // Answerscore needs to be created and added
+            // foreach (AnswerScore answerScore in condition.Answers)
+            // {
+            // condition.AddAnswerAsync(answerScore);           
+            // }
             // Logic for creating a valid Condition
-            return new Condition(description, question, asnwers, isRequired);
+            // return new Condition(description, question, asnwers, isRequired);
+            throw new Exception();
         }
     }
 }
