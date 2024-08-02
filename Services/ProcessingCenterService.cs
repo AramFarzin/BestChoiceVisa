@@ -4,7 +4,7 @@ namespace Domain.Services;
 public class ProcessingCenterService : IProcessingCenterService
 {
 
-    public Task AddCounteryToVisaApplicationCenterAsync(Guid CenterId, Country country)
+    public Task AddCounteryToVisaApplicationCenterAsync(ProcessingCenterId CenterId, Country country)
     {
         throw new NotImplementedException();
     }
@@ -24,7 +24,7 @@ public class ProcessingCenterService : IProcessingCenterService
         throw new NotImplementedException();
     }
 
-    public Task DeleteProcessingCenterAsync(Guid id)
+    public Task DeleteProcessingCenterAsync(ProcessingCenterId id)
     {
         throw new NotImplementedException();
     }
@@ -34,12 +34,12 @@ public class ProcessingCenterService : IProcessingCenterService
         throw new NotImplementedException();
     }
 
-    public Task<ProcessingCenter> GetProcessingCenterByVisaIdAsync(Guid visaId)
+    public Task<ProcessingCenter> GetProcessingCenterByVisaIdAsync(VisaId visaId)
     {
         throw new NotImplementedException();
     }
 
-    public Task RemoveCounteryFromVisaApplicationCenterAsync(Guid CenterId, Country country)
+    public Task RemoveCounteryFromVisaApplicationCenterAsync(ProcessingCenterId CenterId, Country country)
     {
         throw new NotImplementedException();
     }

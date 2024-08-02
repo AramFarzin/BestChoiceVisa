@@ -22,11 +22,12 @@ public class VisaService : IVisaService
 
     public async Task CreateVisaAsync(VisaType visaType,
                 Country country,
-                Guid applicationProcessId,
+                ApplicationProcessId applicationProcessId,
                 Money fees,
                 int minimumScore)
     {
-       await _visaRepository.AddAsync(Visa.Create(visaType, country , applicationProcessId , fees, minimumScore));
+    
+       await _visaRepository.AddAsync(Visa.Create(new VisaId(new Guid()), visaType, country , applicationProcessId , fees, minimumScore));
        await _unitOfWork.SavechangesAsync(CancellationToken.None);
     }
 
@@ -74,7 +75,7 @@ public class VisaService : IVisaService
         }
     }
     
-    public async Task ReopendAsync(Guid id)
+    public async Task ReopendAsync(VisaId id)
     {
         Visa visa = await _visaRepository.GetByIdAsync(id);
         if(visa == null)
@@ -85,7 +86,7 @@ public class VisaService : IVisaService
         visa.GetOpened();
     }
 
-    public async Task SuspendAsync(Guid id, string reasonOfSuspending)
+    public async Task SuspendAsync(VisaId id, string reasonOfSuspending)
     {
        Visa visa = await _visaRepository.GetByIdAsync(id);
         if(visa == null)
@@ -125,7 +126,7 @@ public class VisaService : IVisaService
         var QuestionList = new List<Question>();
         foreach (var visa in visaList)
         {
-            var conditionList = await _visaRepository.GetConditionListAsync(visa.Id);
+            var conditionList = await _visaRepository.GetConditionListAsync((VisaId)visa.Id);
             QuestionList.AddRange(conditionList.Select(c => c.Question));
         }
 

@@ -6,21 +6,22 @@ public sealed class VisaApplicationCenter : ProcessingCenter
     [Required]
     private HashSet<Country> CountryList  { get; init; } = new();
 
-    private VisaApplicationCenter(Guid id,
+    private VisaApplicationCenter(ProcessingCenterId id,
                                  string name,
                                  Address address,
                                  ContactInfo contactInfo) : base(id, name, address, contactInfo)
     {
     }
 
-    public static VisaApplicationCenter Create(string name,
+    public static VisaApplicationCenter Create(ProcessingCenterId id,
+                                                string name,
                                                 Address address,
                                                 ContactInfo contactInfo)
     {
-        return new VisaApplicationCenter(new Guid(),
-                                            name,
-                                            address,
-                                            contactInfo);
+        return new VisaApplicationCenter(id,
+                                        name,
+                                        address,
+                                        contactInfo);
 
     }
 

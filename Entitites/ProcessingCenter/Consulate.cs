@@ -4,23 +4,24 @@ namespace Domain.Entities;
 public sealed class Consulate : ProcessingCenter
 {
     [Required]
-    public Guid EmbassyId { get; private set; }
+    public ProcessingCenterId EmbassyId { get; private set; }
 
-    private Consulate(Guid id,
+    private Consulate(ProcessingCenterId id,
                      string name,
                      Address address,
                      ContactInfo contactInfo,
-                     Guid embassyId) : base(id, name, address, contactInfo)
+                     ProcessingCenterId embassyId) : base(id, name, address, contactInfo)
     {
         EmbassyId = embassyId;
     }
 
-    public static Consulate Create(string name,
-                     Address address,
-                     ContactInfo contactInfo,
-                     Guid embassyId) 
+    public static Consulate Create(ProcessingCenterId id,
+                                   string name,
+                                   Address address,
+                                   ContactInfo contactInfo,
+                                   ProcessingCenterId embassyId) 
     {
-       return new Consulate(new Guid(),
+       return new Consulate(id,
                             name,
                             address,
                             contactInfo,

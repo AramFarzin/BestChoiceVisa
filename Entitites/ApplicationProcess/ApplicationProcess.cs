@@ -6,7 +6,7 @@ namespace Domain.Entities;
 public sealed class ApplicationProcess : Entity
 {        
     [Required]
-    public Guid EmbassyId { get; private set; }
+    public ProcessingCenterId EmbassyId { get; private set; }
 
     [Required]
     public ProcessType ProcessType { get; private set; }
@@ -20,8 +20,8 @@ public sealed class ApplicationProcess : Entity
     [Required]
     public string Instructions  { get; private set; } = string.Empty;
 
-    private ApplicationProcess(Guid id,
-                              Guid embassyId,
+    private ApplicationProcess(ApplicationProcessId id,
+                              ProcessingCenterId embassyId,
                               ProcessType processType,
                               int minProcessingDays,
                               int maxProcessingDays,
@@ -34,13 +34,14 @@ public sealed class ApplicationProcess : Entity
         Instructions = instructions ;
     }
 
-    public static ApplicationProcess Create(Guid embassyId,
-                        ProcessType processType,
-                        int minProcessingDays,
-                        int maxProcessingDays,
-                        string instructions)
+    public static ApplicationProcess Create(ApplicationProcessId id,
+                                            ProcessingCenterId embassyId,
+                                            ProcessType processType,
+                                            int minProcessingDays,
+                                            int maxProcessingDays,
+                                            string instructions)
     {
-        return  new ApplicationProcess(new Guid(),
+        return  new ApplicationProcess(id,
                                         embassyId,
                                         processType,
                                         minProcessingDays,
@@ -56,4 +57,7 @@ public sealed class ApplicationProcess : Entity
         Instructions = instructions;
     }   
 }
+
+
+
 
