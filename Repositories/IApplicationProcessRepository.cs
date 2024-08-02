@@ -4,6 +4,6 @@ using Domain.Primitives;
 namespace Domain.Repositories;
 public interface IApplicationProcessRepository: IRepository<ApplicationProcess> 
 {
-    Task<ApplicationProcess> GetByVisaIdAndProcessingCenterIdAsync(Guid VisaId, Guid processingCenterId);
+    Task<ApplicationProcess> GetByVisaIdAndProcessingCenterIdAsync(VisaId VisaId, ProcessingCenterId processingCenterId);
     Task<IEnumerable<ApplicationProcess>> GetAllApplicationProcessByCountryAsync(Country country);
 }

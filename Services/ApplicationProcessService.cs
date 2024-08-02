@@ -14,13 +14,13 @@ public class ApplicationProcessService : IApplicationProcessService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task  CreateApplicationProcessAsync(Guid embassyId, ProcessType processType, int minProcessingTime, int maxProcessingTime, string instructions)
+    public async Task  CreateApplicationProcessAsync(ProcessingCenterId embassyId, ProcessType processType, int minProcessingTime, int maxProcessingTime, string instructions)
     {
-        var process = ApplicationProcess.Create(embassyId, processType, minProcessingTime, maxProcessingTime, instructions);
+        var process = ApplicationProcess.Create(new ApplicationProcessId(new Guid()), embassyId, processType, minProcessingTime, maxProcessingTime, instructions);
         await _applicationProcessRepository.AddAsync(process);
     }
 
-    public async Task EditApplicationProcessAsync(Guid id, ProcessType processType, int minProcessingTime, int maxProcessingTime, string instructions)
+    public async Task EditApplicationProcessAsync(ApplicationProcessId id, ProcessType processType, int minProcessingTime, int maxProcessingTime, string instructions)
     {
         // Asynchronously get the process by ID
         var process = await _applicationProcessRepository.GetByIdAsync(id);
@@ -40,7 +40,7 @@ public class ApplicationProcessService : IApplicationProcessService
         await _unitOfWork.SavechangesAsync();
     }
 
-    public async Task DeleteApplicationProcessAsync(Guid id)
+    public async Task DeleteApplicationProcessAsync(ApplicationProcessId id)
     {
         var process = await _applicationProcessRepository.GetByIdAsync(id);
         if (process == null)
@@ -52,7 +52,7 @@ public class ApplicationProcessService : IApplicationProcessService
     }
 
 
-    public async Task<ApplicationProcess> GetApplicationProcessesByVisaIdAsync(Guid visaId, Guid processingCenterId)
+    public async Task<ApplicationProcess> GetApplicationProcessesByVisaIdAsync(VisaId visaId, ProcessingCenterId processingCenterId)
     {
         return await _applicationProcessRepository.GetByVisaIdAndProcessingCenterIdAsync(visaId, processingCenterId);
     }

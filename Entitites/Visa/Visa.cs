@@ -12,7 +12,7 @@ public sealed class Visa : Entity
     public Country Country { get; private set; }
         
     [Required]
-    public Guid ApplicationProcessId { get; private set; }
+    public ApplicationProcessId ApplicationProcessId { get; private set; }
    
     [Required]
     public Money Fees { get; private set;}
@@ -35,10 +35,10 @@ public sealed class Visa : Entity
     [Required]
     private HashSet<VisaRequirement> VisaRequirementList { get; init; } = new();
 
-    private Visa(Guid id,
+    private Visa(VisaId id,
                 VisaType visaType,
                 Country country,
-                Guid applicationProcessId,
+                ApplicationProcessId applicationProcessId,
                 Money fees,
                 int minimumScore) : base(id)
     {
@@ -49,13 +49,14 @@ public sealed class Visa : Entity
         MinimumScore = minimumScore;
     }
 
-    public static Visa Create(VisaType visaType,
+    public static Visa Create(VisaId id,
+                VisaType visaType,
                 Country country,
-                Guid applicationProcessId,
+                ApplicationProcessId applicationProcessId,
                 Money fees,
                 int minimumScore)
     {
-        return new Visa(new Guid(),
+        return new Visa(id ,
                         visaType,
                         country,
                         applicationProcessId,
@@ -63,7 +64,7 @@ public sealed class Visa : Entity
                         minimumScore);
     }
     
-    public void Edit(Guid applicationProcessId,
+    public void Edit(ApplicationProcessId applicationProcessId,
                 Money fees,
                 int minimumScore)
     {
@@ -83,7 +84,7 @@ public sealed class Visa : Entity
     public void Add(Requirement requirement, int numbers, string description)
     {
         //create requirement
-        VisaRequirement visaRequirement = VisaRequirement.Create(Id, requirement, numbers, description);
+        VisaRequirement visaRequirement = VisaRequirement.Create((VisaId)Id, requirement, numbers, description);
 
         VisaRequirementList.Add(visaRequirement);
     }

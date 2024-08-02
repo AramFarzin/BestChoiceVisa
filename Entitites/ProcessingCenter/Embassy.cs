@@ -8,21 +8,22 @@ public sealed class Embassy : ProcessingCenter
     public bool IsSuspended { get; private set; } = false;
     public string ReasonOfSuspending { get; private set; } = string.Empty;
 
-    private Embassy(Guid id,
-                   string name,
-                   Address address,
-                   ContactInfo contactInfo,
-                   Country country) : base(id, name, address, contactInfo)
+    private Embassy(ProcessingCenterId id,
+                    string name,
+                    Address address,
+                    ContactInfo contactInfo,
+                    Country country) : base(id, name, address, contactInfo)
     {
         Country = country;
     }
 
-    public static Embassy Create(string name,
-                   Address address,
-                   ContactInfo contactInfo,
-                   Country country)
+    public static Embassy Create(ProcessingCenterId id,
+                                 string name,
+                                 Address address,
+                                 ContactInfo contactInfo,
+                                 Country country)
     {
-        return new Embassy(new Guid(),
+        return new Embassy(id,
                             name, 
                             address,
                             contactInfo, 

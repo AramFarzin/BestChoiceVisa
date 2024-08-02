@@ -14,7 +14,7 @@ public abstract class ProcessingCenter: Entity
     [Required]
     protected ContactInfo ContactInfo { get; private set; }
     
-    protected ProcessingCenter(Guid id,
+    protected ProcessingCenter(ProcessingCenterId id,
                                 string name,
                                 Address address,
                                 ContactInfo contactInfo) : base(id)
