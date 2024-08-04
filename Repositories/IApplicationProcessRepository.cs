@@ -1,4 +1,5 @@
 using Domain.Entities;
+using Domain.ValueObjects;
 using Domain.Primitives;
 
 namespace Domain.Repositories;

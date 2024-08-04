@@ -18,7 +18,7 @@ public sealed class Visa : Entity
     public Money Fees { get; private set;}
 
     [Required]
-    public int MinimumScore { get; private set;} = 0;
+    public NoneNegativeIntegerNumber MinimumScore { get; private set;}
 
     [Required]
     public bool IsSuspended { get; private set;} = false;
@@ -40,7 +40,7 @@ public sealed class Visa : Entity
                 Country country,
                 ApplicationProcessId applicationProcessId,
                 Money fees,
-                int minimumScore) : base(id)
+                NoneNegativeIntegerNumber minimumScore) : base(id)
     {
         VisaType = visaType;
         Country = country;
@@ -54,7 +54,7 @@ public sealed class Visa : Entity
                 Country country,
                 ApplicationProcessId applicationProcessId,
                 Money fees,
-                int minimumScore)
+                NoneNegativeIntegerNumber minimumScore)
     {
         return new Visa(id ,
                         visaType,
@@ -66,14 +66,14 @@ public sealed class Visa : Entity
     
     public void Edit(ApplicationProcessId applicationProcessId,
                 Money fees,
-                int minimumScore)
+                NoneNegativeIntegerNumber minimumScore)
     {
         ApplicationProcessId = applicationProcessId;
         Fees = fees;
         MinimumScore = minimumScore;
     }
     
-    public void Add(string conditionDescription, Question question, bool isRequired)
+    public void Add(RequiredString conditionDescription, Question question, bool isRequired)
     {
         //create condition
         var condition = Condition.Create(conditionDescription, question, isRequired);
@@ -81,7 +81,7 @@ public sealed class Visa : Entity
         ConditionList.Add(condition);
     }
     
-    public void Add(Requirement requirement, int numbers, string description)
+    public void Add(Requirement requirement, NoneNegativeIntegerNumber numbers, string description)
     {
         //create requirement
         VisaRequirement visaRequirement = VisaRequirement.Create((VisaId)Id, requirement, numbers, description);
@@ -89,7 +89,7 @@ public sealed class Visa : Entity
         VisaRequirementList.Add(visaRequirement);
     }
 
-    public void Add(string description)
+    public void Add(RequiredString description)
     {
         //create criteria
         Criteria criteria = Criteria.Create(description);

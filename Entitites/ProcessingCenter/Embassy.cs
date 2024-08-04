@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Domain.ValueObjects;
 
 namespace Domain.Entities;
 public sealed class Embassy : ProcessingCenter

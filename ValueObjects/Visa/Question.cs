@@ -1,2 +1,2 @@
 namespace Domain.ValueObjects;
-public record Question(string Description) ;
+public record Question(RequiredString Description) ;

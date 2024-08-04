@@ -1,11 +1,11 @@
 namespace Domain.ValueObjects;
 public record Criteria
 {
-    public string Description { get; }
+    public RequiredString Description { get; init;}
 
-    private Criteria(string description) => Description = description;
+    private Criteria(RequiredString description) => Description = description;
 
-    public static Criteria Create(string description)
+    public static Criteria Create(RequiredString description)
     {
         return new Criteria(description);
     }

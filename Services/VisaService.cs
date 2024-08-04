@@ -17,14 +17,14 @@ public class VisaService : IVisaService
 
     public static int CalculateScore(IEnumerable<AnswerScore> scores)
     {
-        return scores.Sum(s => s.Score);
+        return scores.Sum(s => s.Score.Value);
     }
 
     public async Task CreateVisaAsync(VisaType visaType,
-                Country country,
-                ApplicationProcessId applicationProcessId,
-                Money fees,
-                int minimumScore)
+                                      Country country,
+                                      ApplicationProcessId applicationProcessId,
+                                      Money fees,
+                                      NoneNegativeIntegerNumber minimumScore)
     {
     
        await _visaRepository.AddAsync(Visa.Create(new VisaId(new Guid()), visaType, country , applicationProcessId , fees, minimumScore));
@@ -57,7 +57,7 @@ public class VisaService : IVisaService
         }
         else
         {
-            return visas.Where(v => v.MinimumScore <= score);
+            return visas.Where(v => v.MinimumScore.Value <= score);
         }
     }
 

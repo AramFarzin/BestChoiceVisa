@@ -1,1 +1,2 @@
-public record Money(string Currency, decimal Amount);
+namespace Domain.ValueObjects;
+public record Money(RequiredString Currency, NoneNegativeDecimalNumber Amount);

@@ -1,2 +1,2 @@
 namespace Domain.ValueObjects;
-public record AnswerScore(string Answer, int Score);
+public record AnswerScore(RequiredString Answer, NoneNegativeIntegerNumber Score);

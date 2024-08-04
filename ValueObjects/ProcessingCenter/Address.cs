@@ -1,3 +1,4 @@
 using Domain.Entities;
 
-public record Address(string Street, string City, string State, string PostalCode, Country Country);
+namespace Domain.ValueObjects;
+public record Address(RequiredString Street, RequiredString City, RequiredString State, string PostalCode, Country Country, string Description);

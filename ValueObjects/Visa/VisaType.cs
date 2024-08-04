@@ -1,1 +1,2 @@
-public record VisaType(string Name, string Description, int MinimumDuration, int MaximumDuration);
+namespace Domain.ValueObjects;
+public record VisaType(RequiredString Name, string Description, NoneNegativeIntegerNumber MinimumDuration, NoneNegativeIntegerNumber MaximumDuration);

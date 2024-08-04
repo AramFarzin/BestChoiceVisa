@@ -8,7 +8,7 @@ public interface IVisaService
                 Country country,
                 ApplicationProcessId applicationProcessId,
                 Money fees,
-                int minimumScore);
+                NoneNegativeIntegerNumber minimumScore);
 
     Task SuspendAsync(VisaId id, string reasonOfSuspending);
     Task ReopendAsync(VisaId id);

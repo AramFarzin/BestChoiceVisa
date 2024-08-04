@@ -1,23 +1,20 @@
 using System;
 using System.Text.RegularExpressions;
 
+namespace Domain.ValueObjects;
 public record EmailAddress
 {
-    public string Value { get; }
+    public RequiredString Value { get; init;}
 
     public EmailAddress(string value)
     {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            throw new ArgumentException("Email address cannot be empty.", nameof(value));
-        }
 
         if (!IsValidEmail(value))
         {
             throw new ArgumentException("Invalid email address format.", nameof(value));
         }
 
-        Value = value;
+        Value = new RequiredString(value);
     }
 
     private static bool IsValidEmail(string email)
@@ -25,6 +22,4 @@ public record EmailAddress
         var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
         return emailRegex.IsMatch(email);
     }
-
-    public override string ToString() => Value;
 }

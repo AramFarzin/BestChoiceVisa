@@ -1,1 +1,2 @@
-public record Country(string Name, int Code);
+namespace Domain.ValueObjects;
+public record Country(RequiredString Name, int Code);
