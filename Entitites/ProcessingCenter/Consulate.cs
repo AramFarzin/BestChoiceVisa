@@ -4,20 +4,21 @@ using Domain.ValueObjects;
 namespace Domain.Entities;
 public sealed class Consulate : ProcessingCenter
 {
+    //The consulate is related to whic embassy
     [Required]
-    public ProcessingCenterId EmbassyId { get; private set; }
+    private ProcessingCenterId _embassyId;
 
     private Consulate(ProcessingCenterId id,
-                     string name,
+                     ProcessingCenterName name,
                      Address address,
                      ContactInfo contactInfo,
                      ProcessingCenterId embassyId) : base(id, name, address, contactInfo)
     {
-        EmbassyId = embassyId;
+        _embassyId = embassyId;
     }
 
     public static Consulate Create(ProcessingCenterId id,
-                                   string name,
+                                   ProcessingCenterName name,
                                    Address address,
                                    ContactInfo contactInfo,
                                    ProcessingCenterId embassyId) 

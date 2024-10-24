@@ -1,31 +1,33 @@
 using System.ComponentModel.DataAnnotations;
 using Domain.ValueObjects;
-using Domain.Primitives;
+using Shared.Abstraction.Domain;
 
 namespace Domain.Entities;
-public abstract class ProcessingCenter: Entity
+public abstract class ProcessingCenter : AggregateRoot<ProcessingCenterId>
 {
-
     [Required]
-    protected string Name { get; private  set; } = string.Empty;
+    protected ProcessingCenterName Name = string.Empty;
     
     [Required]
-    protected Address Address { get; private set; }
+    protected Address Address;
     
     [Required]
-    protected ContactInfo ContactInfo { get; private set; }
+    protected ContactInfo ContactInfo;
     
     protected ProcessingCenter(ProcessingCenterId id,
-                                string name,
+                                ProcessingCenterName name,
                                 Address address,
-                                ContactInfo contactInfo) : base(id)
+                                ContactInfo contactInfo) 
     {
+        Id = id;
         Name = name;
         Address = address;
         ContactInfo = contactInfo;
     }
     
-    public void Edit(string name, Address address, ContactInfo contactInfo)
+    public void Edit(ProcessingCenterName name,
+                     Address address,
+                     ContactInfo contactInfo)
     {
         Name = name;
         Address = address;

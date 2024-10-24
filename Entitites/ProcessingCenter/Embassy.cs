@@ -5,21 +5,22 @@ namespace Domain.Entities;
 public sealed class Embassy : ProcessingCenter
 {
     [Required]
-    public Country Country { get; private set; }
-    public bool IsSuspended { get; private set; } = false;
-    public string ReasonOfSuspending { get; private set; } = string.Empty;
+    private Country _country ;
+
+    [Required]
+    private EmbassyIsSuspended _isSuspended;
 
     private Embassy(ProcessingCenterId id,
-                    string name,
+                    ProcessingCenterName name,
                     Address address,
                     ContactInfo contactInfo,
                     Country country) : base(id, name, address, contactInfo)
     {
-        Country = country;
+        _country = country;
     }
 
     public static Embassy Create(ProcessingCenterId id,
-                                 string name,
+                                 ProcessingCenterName name,
                                  Address address,
                                  ContactInfo contactInfo,
                                  Country country)
@@ -31,21 +32,15 @@ public sealed class Embassy : ProcessingCenter
                             country);
    }
 
-    public void GetSuspended(string reason)
+    public void SuspendEmbassy(string reason)
     {
-        if(!IsSuspended)
-        {
-            ReasonOfSuspending = reason;
-            IsSuspended = true;
-        }
+        //// If you only set the reason, the status will automatically change to IsSuspended.
+        _isSuspended = reason;
     }
     
-    public void GetOpened()
+    public void ReinstateEmbassy()
     {
-        if(IsSuspended)
-        {
-            ReasonOfSuspending = string.Empty;
-            IsSuspended = false;
-        }
+        //// If you only remove the reason, the status will automatically change to Reinstated.
+        _isSuspended = string.Empty;
     }
 }

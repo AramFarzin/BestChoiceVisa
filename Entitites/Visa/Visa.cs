@@ -1,52 +1,52 @@
 using System.ComponentModel.DataAnnotations;
-using Domain.Primitives;
 using Domain.ValueObjects;
+using Shared.Abstraction.Domain;
+using Shared.Abstraction.Primitives;
 
 namespace Domain.Entities;
-public sealed class Visa : Entity
+public sealed class Visa : AggregateRoot<VisaId>
 {
     [Required]
-    public VisaType VisaType { get; private set; }
+    private VisaType _visaType;
 
     [Required]
-    public Country Country { get; private set; }
+    private Country _country;
         
     [Required]
-    public ApplicationProcessId ApplicationProcessId { get; private set; }
+    private ApplicationProcessId _applicationProcessId;
    
     [Required]
-    public Money Fees { get; private set;}
+    private Money _fees = new("EURO", 0);
 
     [Required]
-    public NoneNegativeIntegerNumber MinimumScore { get; private set;}
+    private VisaScore _minimumScore = 0;
 
     [Required]
-    public bool IsSuspended { get; private set;} = false;
 
-    [Required]
-    public string ReasonOfSuspending { get; private set;} = string.Empty;
+    private VisaSuspended _visaSuspended = new VisaSuspended(string.Empty, false);
     
     [Required]
-    private HashSet<Condition> ConditionList { get; init; } = new();
+    private LinkedList<Condition> _conditionList = new();
    
     [Required]
-    private HashSet<Criteria> CriteriaList { get; init; } = new();
+    private LinkedList<Criteria> _criteriaList = new();
 
     [Required]
-    private HashSet<VisaRequirement> VisaRequirementList { get; init; } = new();
+    private LinkedList<VisaRequirement> _visaRequirementList = new();
 
     private Visa(VisaId id,
                 VisaType visaType,
                 Country country,
                 ApplicationProcessId applicationProcessId,
                 Money fees,
-                NoneNegativeIntegerNumber minimumScore) : base(id)
+                VisaScore minimumScore)
     {
-        VisaType = visaType;
-        Country = country;
-        ApplicationProcessId = applicationProcessId;
-        Fees = fees;
-        MinimumScore = minimumScore;
+        Id = id;
+        _visaType = visaType;
+        _country = country;
+        _applicationProcessId = applicationProcessId;
+        _fees = fees;
+        _minimumScore = minimumScore;
     }
 
     public static Visa Create(VisaId id,
@@ -54,7 +54,7 @@ public sealed class Visa : Entity
                 Country country,
                 ApplicationProcessId applicationProcessId,
                 Money fees,
-                NoneNegativeIntegerNumber minimumScore)
+                VisaScore minimumScore)
     {
         return new Visa(id ,
                         visaType,
@@ -66,73 +66,65 @@ public sealed class Visa : Entity
     
     public void Edit(ApplicationProcessId applicationProcessId,
                 Money fees,
-                NoneNegativeIntegerNumber minimumScore)
+                VisaScore minimumScore)
     {
-        ApplicationProcessId = applicationProcessId;
-        Fees = fees;
-        MinimumScore = minimumScore;
+        _applicationProcessId = applicationProcessId;
+        _fees = fees;
+        _minimumScore = minimumScore;
     }
     
-    public void Add(RequiredString conditionDescription, Question question, bool isRequired)
+    public void Add(string conditionDescription, Question question, bool isRequired)
     {
         //create condition
         var condition = Condition.Create(conditionDescription, question, isRequired);
 
-        ConditionList.Add(condition);
+        _conditionList.AddLast(condition);
     }
     
-    public void Add(Requirement requirement, NoneNegativeIntegerNumber numbers, string description)
+    public void Add(Requirement requirement, int numbers, string description)
     {
         //create requirement
         VisaRequirement visaRequirement = VisaRequirement.Create((VisaId)Id, requirement, numbers, description);
 
-        VisaRequirementList.Add(visaRequirement);
+        _visaRequirementList.AddLast(visaRequirement);
     }
 
-    public void Add(RequiredString description)
+    public void Add(string description)
     {
         //create criteria
         Criteria criteria = Criteria.Create(description);
 
-        CriteriaList.Add(criteria);
+        _criteriaList.AddLast(criteria);
     }
     
     public void Remove(Condition condition)
     {
-        ConditionList.Remove(condition);
+        _conditionList.Remove(condition);
         //delete condition
         //TODO:
     }
     
     public void Remove(VisaRequirement visaRequirement)
     {
-        VisaRequirementList.Remove(visaRequirement);
+        _visaRequirementList.Remove(visaRequirement);
         //delete requirement
         //TODO:
     }
   
     public void Remove(Criteria criteria)
     {
-        CriteriaList.Remove(criteria);
+        _criteriaList.Remove(criteria);
         //delete criteria
         //TODO:
     }
 
     public void GetSuspended(string reason)
     {
-        if(!IsSuspended)
-        {
-            ReasonOfSuspending = reason;
-            IsSuspended = true;
-        }
+        _visaSuspended.GetSuspended(reason);
     }
     
     public void GetOpened()
     {
-        if(IsSuspended)
-        {
-            ReasonOfSuspending = string.Empty;
-            IsSuspended = false;
-        }
+        _visaSuspended.GetOpened();
     }
 }

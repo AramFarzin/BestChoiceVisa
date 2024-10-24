@@ -1,12 +1,19 @@
+using Domain.Exceptions;
+
 namespace Domain.ValueObjects;
 public record Criteria
 {
-    public RequiredString Description { get; init;}
+    public string Description { get; init;}
 
-    private Criteria(RequiredString description) => Description = description;
+    private Criteria(string description) => Description = description;
 
-    public static Criteria Create(RequiredString description)
+    public static Criteria Create(string description)
     {
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            throw new CriteriaDescriptionException();
+        }
+
         return new Criteria(description);
     }
 }

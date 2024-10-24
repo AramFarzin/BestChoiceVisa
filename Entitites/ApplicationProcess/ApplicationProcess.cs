@@ -1,60 +1,53 @@
 using System.ComponentModel.DataAnnotations;
-using Domain.Primitives;
 using Domain.ValueObjects;
+using Shared.Abstraction.Domain;
 
 namespace Domain.Entities;
-public sealed class ApplicationProcess : Entity
+public sealed class ApplicationProcess : AggregateRoot<ApplicationProcessId>
 {        
     [Required]
-    public ProcessingCenterId EmbassyId { get; private set; }
-
+    private ProcessingCenterId _embassyId;
+   
     [Required]
-    public ProcessType ProcessType { get; private set; }
-
+    private ProcessType _processType;
+   
     [Required]
-    public int MinProcessingDays  { get; private set; }  = 0;
+    private ApplicationProccessDays _processingDays;
     
     [Required]
-    public int MaxProcessingDays  { get; private set; }  = 0;
-    
-    [Required]
-    public string Instructions  { get; private set; } = string.Empty;
+    private ApplicationProccessInstruction _instructions;
 
-    private ApplicationProcess(ApplicationProcessId id,
+    internal ApplicationProcess(ApplicationProcessId id,
                               ProcessingCenterId embassyId,
                               ProcessType processType,
-                              int minProcessingDays,
-                              int maxProcessingDays,
-                              string instructions) : base(id)
+                              ApplicationProccessDays processingDays,
+                              ApplicationProccessInstruction instructions) 
     {
-        EmbassyId = embassyId;
-        ProcessType = processType;
-        MinProcessingDays = minProcessingDays;
-        MaxProcessingDays = maxProcessingDays;
-        Instructions = instructions ;
+        Id = id;
+        _embassyId = embassyId;
+        _processType = processType;
+        _processingDays = processingDays;
+        _instructions = instructions;
     }
 
     public static ApplicationProcess Create(ApplicationProcessId id,
                                             ProcessingCenterId embassyId,
                                             ProcessType processType,
-                                            int minProcessingDays,
-                                            int maxProcessingDays,
-                                            string instructions)
+                                            ApplicationProccessDays processingDays,
+                                            ApplicationProccessInstruction instructions)
     {
         return  new ApplicationProcess(id,
                                         embassyId,
                                         processType,
-                                        minProcessingDays,
-                                        maxProcessingDays,
+                                        processingDays,
                                         instructions);
     }
 
-    public void Edit(ProcessType processType, int minProcessingDays, int maxProcessingDays, string instructions)
+    public void Edit(ProcessType processType, ApplicationProccessDays minProcessingDays, ApplicationProccessInstruction instructions)
     {
-        ProcessType = processType;
-        MinProcessingDays = minProcessingDays;
-        MaxProcessingDays = maxProcessingDays;
-        Instructions = instructions;
+        _processType = processType;
+        _processingDays = minProcessingDays;
+        _instructions = instructions;
     }   
 }
 
