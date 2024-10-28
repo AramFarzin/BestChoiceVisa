@@ -3,7 +3,7 @@ using Domain.Exceptions;
 using Domain.ValueObjects;
 using Shared.Abstraction.Domain;
 
-namespace Domain.Entities.Visa;
+namespace Domain.Entities;
 public sealed class Visa : AggregateRoot<VisaId>
 {
     [Required]
@@ -33,7 +33,7 @@ public sealed class Visa : AggregateRoot<VisaId>
     [Required]
     private readonly HashSet<Requirement> _requirementList = [];
 
-    private Visa(VisaId id,
+    internal Visa(VisaId id,
                 VisaType visaType,
                 Country country,
                 ApplicationProcessId applicationProcessId,
@@ -47,30 +47,6 @@ public sealed class Visa : AggregateRoot<VisaId>
         _fees = fees;
         _minimumScore = minimumScore;
     }
-
-    public static Visa Create(VisaId id,
-                VisaType visaType,
-                Country country,
-                ApplicationProcessId applicationProcessId,
-                Money fees,
-                VisaScore minimumScore,
-                IEnumerable<Condition>? conditionList,
-                IEnumerable<Requirement>? requirementList,
-                IEnumerable<Criteria>? criteriaList)
-    {
-        var visa = new Visa(id ,
-                        visaType,
-                        country,
-                        applicationProcessId,
-                        fees,
-                        minimumScore);
-
-        if (conditionList != null) foreach (var condition in conditionList) visa.Add(condition);
-        if (requirementList != null) foreach (var condition in requirementList) visa.Add(condition);
-        if (criteriaList != null) foreach (var condition in criteriaList) visa.Add(condition);
-        
-        return visa;
-    }
     
     public void Edit(ApplicationProcessId applicationProcessId,
                 Money fees,
@@ -83,7 +59,7 @@ public sealed class Visa : AggregateRoot<VisaId>
 
     public void Add(Condition condition)
     {
-        if (_conditionList.Contains(condition))
+        if (FindCondition(condition.Description) != null)
         {
             throw new ConditionAlreadyExistsException(condition.Description);
         }
@@ -92,7 +68,7 @@ public sealed class Visa : AggregateRoot<VisaId>
 
     public void Add(Requirement requirement)
     {
-        if (_requirementList.Contains(requirement))
+        if (FindRequirement(requirement.Description) != null)
         {
             throw new RequirementAlreadyExistsException(requirement.Description);
         }
@@ -101,16 +77,16 @@ public sealed class Visa : AggregateRoot<VisaId>
 
     public void Add(Criteria criteria)
     {
-        if (_criteriaList.Contains(criteria))
+        if (FindCriteria(criteria.Description) != null)
         {
             throw new CriteriaAlreadyExistsException(criteria.Description);
         }
         _criteriaList.Add(criteria);
     }
-
+    
     public void Remove(Condition condition)
     {
-        if (!_conditionList.Contains(condition))
+        if (FindCondition(condition.Description) == null)
         {
             throw new ConditionAlreadyDoesNotExistException(condition.Description);
         }
@@ -119,7 +95,7 @@ public sealed class Visa : AggregateRoot<VisaId>
 
     public void Remove(Requirement requirement)
     {
-        if (!_requirementList.Contains(requirement))
+        if (FindRequirement(requirement.Description) == null)
         {
             throw new RequirementAlreadyDoesNotExistException(requirement.Description);
         }
@@ -128,11 +104,50 @@ public sealed class Visa : AggregateRoot<VisaId>
 
     public void Remove(Criteria criteria)
     {
-        if (!_criteriaList.Contains(criteria))
+        if (FindCriteria(criteria.Description) == null)
         {
             throw new CriteriaAlreadyDoesNotExistException(criteria.Description);
         }
         _criteriaList.Remove(criteria);
+    }
+
+    public void AddList(HashSet<Condition> collection)
+    {
+        foreach (var item in collection)
+        {
+            Add(item);        
+        }
+    }
+
+    public void AddList(HashSet<Requirement> collection)
+    {
+        foreach (var item in collection)
+        {
+            Add(item);        
+        }
+    }
+
+    public void AddList(HashSet<Criteria> collection)
+    {
+        foreach (var item in collection)
+        {
+            Add(item);        
+        }
+    }
+
+    public Condition? FindCondition(string condition)
+    {
+        return _conditionList.SingleOrDefault(c => c.Description == condition);
+    }
+
+    public Requirement? FindRequirement(string requirement)
+    {
+        return _requirementList.SingleOrDefault(c => c.Description == requirement);
+    }
+
+    public Criteria? FindCriteria(string criteria)
+    {
+        return _criteriaList.SingleOrDefault(c => c.Description == criteria);
     }
 
     public void GetSuspended(string reason)

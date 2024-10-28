@@ -17,7 +17,7 @@ public sealed class ApplicationProcess : AggregateRoot<ApplicationProcessId>
     [Required]
     private ApplicationProccessInstruction _instructions;
 
-    private ApplicationProcess(ApplicationProcessId id,
+    internal ApplicationProcess(ApplicationProcessId id,
                               ProcessingCenterId embassyId,
                               ProcessType processType,
                               ApplicationProccessDays processingDays,
@@ -28,19 +28,6 @@ public sealed class ApplicationProcess : AggregateRoot<ApplicationProcessId>
         _processType = processType;
         _processingDays = processingDays;
         _instructions = instructions;
-    }
-
-    public static ApplicationProcess Create(ApplicationProcessId id,
-                                            ProcessingCenterId embassyId,
-                                            ProcessType processType,
-                                            ApplicationProccessDays processingDays,
-                                            ApplicationProccessInstruction instructions)
-    {
-        return  new ApplicationProcess(id,
-                                        embassyId,
-                                        processType,
-                                        processingDays,
-                                        instructions);
     }
 
     public void Edit(ProcessType processType, ApplicationProccessDays minProcessingDays, ApplicationProccessInstruction instructions)

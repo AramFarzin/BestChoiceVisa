@@ -8,34 +8,20 @@ public sealed class VisaApplicationCenter : ProcessingCenter
 {
     [Required]
     private readonly LinkedList<Country> _countryList = new();
-    private VisaApplicationCenter(ProcessingCenterId id,
+    internal VisaApplicationCenter(ProcessingCenterId id,
                                  ProcessingCenterName name,
                                  Address address,
                                  ContactInfo contactInfo) : base(id, name, address, contactInfo)
     {
     }
 
-    private VisaApplicationCenter(ProcessingCenterId id,
+    internal VisaApplicationCenter(ProcessingCenterId id,
                                  ProcessingCenterName name,
                                  Address address,
                                  ContactInfo contactInfo,
                                  LinkedList<Country> countryList) : base(id, name, address, contactInfo)
     {
         _countryList = countryList;
-    }
-
-    public static VisaApplicationCenter Create(ProcessingCenterId id,
-                                                ProcessingCenterName name,
-                                                Address address,
-                                                ContactInfo contactInfo,
-                                                LinkedList<Country> countryList)
-    {
-        return new VisaApplicationCenter(id,
-                                        name,
-                                        address,
-                                        contactInfo,
-                                        countryList);
-
     }
 
     public Country? FindCountry(Country country)

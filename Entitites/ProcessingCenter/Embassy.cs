@@ -10,7 +10,7 @@ public sealed class Embassy : ProcessingCenter
     [Required]
     private EmbassyIsSuspended _isSuspended;
 
-    private Embassy(ProcessingCenterId id,
+    internal Embassy(ProcessingCenterId id,
                     ProcessingCenterName name,
                     Address address,
                     ContactInfo contactInfo,
@@ -18,20 +18,7 @@ public sealed class Embassy : ProcessingCenter
     {
         _country = country;
     }
-
-    public static Embassy Create(ProcessingCenterId id,
-                                 ProcessingCenterName name,
-                                 Address address,
-                                 ContactInfo contactInfo,
-                                 Country country)
-    {
-        return new Embassy(id,
-                            name, 
-                            address,
-                            contactInfo, 
-                            country);
-   }
-
+    
     public void SuspendEmbassy(string reason)
     {
         //// By seting the reason, the status will automatically change to IsSuspended.
