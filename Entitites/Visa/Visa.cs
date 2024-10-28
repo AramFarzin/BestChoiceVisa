@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using Domain.Exceptions;
 using Domain.ValueObjects;
 using Shared.Abstraction.Domain;
-using Shared.Abstraction.Primitives;
 
 namespace Domain.Entities;
 public sealed class Visa : AggregateRoot<VisaId>
@@ -16,7 +16,7 @@ public sealed class Visa : AggregateRoot<VisaId>
     private ApplicationProcessId _applicationProcessId;
    
     [Required]
-    private Money _fees = new("EURO", 0);
+    private Money _fees;
 
     [Required]
     private VisaScore _minimumScore = 0;
@@ -32,7 +32,7 @@ public sealed class Visa : AggregateRoot<VisaId>
     private LinkedList<Criteria> _criteriaList = new();
 
     [Required]
-    private LinkedList<VisaRequirement> _visaRequirementList = new();
+    private LinkedList<Requirement> _requirementList = new LinkedList<Requirement>();
 
     private Visa(VisaId id,
                 VisaType visaType,
@@ -72,50 +72,35 @@ public sealed class Visa : AggregateRoot<VisaId>
         _fees = fees;
         _minimumScore = minimumScore;
     }
-    
-    public void Add(string conditionDescription, Question question, bool isRequired)
-    {
-        //create condition
-        var condition = Condition.Create(conditionDescription, question, isRequired);
 
+    public void Add(Condition condition)
+    {
         _conditionList.AddLast(condition);
     }
-    
-    public void Add(Requirement requirement, int numbers, string description)
-    {
-        //create requirement
-        VisaRequirement visaRequirement = VisaRequirement.Create((VisaId)Id, requirement, numbers, description);
 
-        _visaRequirementList.AddLast(visaRequirement);
+    public void Add(Requirement requirement)
+    {
+        _requirementList.AddLast(requirement);
     }
 
-    public void Add(string description)
+    public void Add(Criteria criteria)
     {
-        //create criteria
-        Criteria criteria = Criteria.Create(description);
-
         _criteriaList.AddLast(criteria);
     }
-    
+
     public void Remove(Condition condition)
     {
-        _conditionList.Remove(condition);
-        //delete condition
-        //TODO:
+        _conditionList.Remove(condition);        
     }
-    
-    public void Remove(VisaRequirement visaRequirement)
+
+    public void Remove(Requirement requirement)
     {
-        _visaRequirementList.Remove(visaRequirement);
-        //delete requirement
-        //TODO:
+        _requirementList.Remove(requirement);
     }
-  
+
     public void Remove(Criteria criteria)
     {
         _criteriaList.Remove(criteria);
-        //delete criteria
-        //TODO:
     }
 
     public void GetSuspended(string reason)
@@ -123,8 +108,8 @@ public sealed class Visa : AggregateRoot<VisaId>
         _visaSuspended.GetSuspended(reason);
     }
     
-    public void GetOpened()
+    public void Reinsiate()
     {
-        _visaSuspended.GetOpened();
+        _visaSuspended.Reinsiate();
     }
 }
