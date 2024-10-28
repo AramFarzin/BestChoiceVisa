@@ -32,7 +32,7 @@ public record VisaSuspended
         Reason = reason;
     }
     
-    public void GetOpened()
+    public void Reinsiate()
     {
          if (IsSuspended)
         {

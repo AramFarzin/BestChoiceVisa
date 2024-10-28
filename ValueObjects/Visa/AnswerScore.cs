@@ -18,8 +18,7 @@ public record AnswerScore
         {
             throw new AnswerScoreException();
         }
-
-
+        
         Answer = new string(answer);
         Score = score;
     }

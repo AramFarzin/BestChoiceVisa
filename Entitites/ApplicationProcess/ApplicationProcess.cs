@@ -17,7 +17,7 @@ public sealed class ApplicationProcess : AggregateRoot<ApplicationProcessId>
     [Required]
     private ApplicationProccessInstruction _instructions;
 
-    internal ApplicationProcess(ApplicationProcessId id,
+    private ApplicationProcess(ApplicationProcessId id,
                               ProcessingCenterId embassyId,
                               ProcessType processType,
                               ApplicationProccessDays processingDays,

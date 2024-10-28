@@ -1,4 +1,4 @@
-using Domain.Entities;
+using Domain.Entities.Visa;
 using Domain.ValueObjects;
 
 namespace Domain.Services;

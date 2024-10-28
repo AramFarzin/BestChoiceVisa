@@ -34,13 +34,13 @@ public sealed class Embassy : ProcessingCenter
 
     public void SuspendEmbassy(string reason)
     {
-        //// If you only set the reason, the status will automatically change to IsSuspended.
+        //// By seting the reason, the status will automatically change to IsSuspended.
         _isSuspended = reason;
     }
     
     public void ReinstateEmbassy()
     {
-        //// If you only remove the reason, the status will automatically change to Reinstated.
+        //// By removing the reason, the status will automatically change to .
         _isSuspended = string.Empty;
     }
 }

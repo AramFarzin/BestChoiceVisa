@@ -1,38 +1,37 @@
 using System.ComponentModel.DataAnnotations;
+using Domain.Exceptions;
 using Domain.ValueObjects;
 using Shared.Abstraction.Domain;
-using Shared.Abstraction.Primitives;
 
-namespace Domain.Entities;
+namespace Domain.Entities.Visa;
 public sealed class Visa : AggregateRoot<VisaId>
 {
     [Required]
-    private VisaType _visaType;
+    private readonly VisaType _visaType;
 
     [Required]
-    private Country _country;
+    private readonly Country _country;
         
     [Required]
     private ApplicationProcessId _applicationProcessId;
    
     [Required]
-    private Money _fees = new("EURO", 0);
+    private Money _fees;
 
     [Required]
     private VisaScore _minimumScore = 0;
 
     [Required]
-
-    private VisaSuspended _visaSuspended = new VisaSuspended(string.Empty, false);
+    private readonly VisaSuspended _visaSuspended = new(string.Empty, false);
     
     [Required]
-    private LinkedList<Condition> _conditionList = new();
+    private readonly HashSet<Condition> _conditionList = [];
    
     [Required]
-    private LinkedList<Criteria> _criteriaList = new();
+    private readonly HashSet<Criteria> _criteriaList = [];
 
     [Required]
-    private LinkedList<VisaRequirement> _visaRequirementList = new();
+    private readonly HashSet<Requirement> _requirementList = [];
 
     private Visa(VisaId id,
                 VisaType visaType,
@@ -54,14 +53,23 @@ public sealed class Visa : AggregateRoot<VisaId>
                 Country country,
                 ApplicationProcessId applicationProcessId,
                 Money fees,
-                VisaScore minimumScore)
+                VisaScore minimumScore,
+                IEnumerable<Condition>? conditionList,
+                IEnumerable<Requirement>? requirementList,
+                IEnumerable<Criteria>? criteriaList)
     {
-        return new Visa(id ,
+        var visa = new Visa(id ,
                         visaType,
                         country,
                         applicationProcessId,
                         fees,
                         minimumScore);
+
+        if (conditionList != null) foreach (var condition in conditionList) visa.Add(condition);
+        if (requirementList != null) foreach (var condition in requirementList) visa.Add(condition);
+        if (criteriaList != null) foreach (var condition in criteriaList) visa.Add(condition);
+        
+        return visa;
     }
     
     public void Edit(ApplicationProcessId applicationProcessId,
@@ -72,50 +80,59 @@ public sealed class Visa : AggregateRoot<VisaId>
         _fees = fees;
         _minimumScore = minimumScore;
     }
-    
-    public void Add(string conditionDescription, Question question, bool isRequired)
-    {
-        //create condition
-        var condition = Condition.Create(conditionDescription, question, isRequired);
 
-        _conditionList.AddLast(condition);
-    }
-    
-    public void Add(Requirement requirement, int numbers, string description)
+    public void Add(Condition condition)
     {
-        //create requirement
-        VisaRequirement visaRequirement = VisaRequirement.Create((VisaId)Id, requirement, numbers, description);
-
-        _visaRequirementList.AddLast(visaRequirement);
+        if (_conditionList.Contains(condition))
+        {
+            throw new ConditionAlreadyExistsException(condition.Description);
+        }
+        _conditionList.Add(condition);
     }
 
-    public void Add(string description)
+    public void Add(Requirement requirement)
     {
-        //create criteria
-        Criteria criteria = Criteria.Create(description);
-
-        _criteriaList.AddLast(criteria);
+        if (_requirementList.Contains(requirement))
+        {
+            throw new RequirementAlreadyExistsException(requirement.Description);
+        }
+        _requirementList.Add(requirement);
     }
-    
+
+    public void Add(Criteria criteria)
+    {
+        if (_criteriaList.Contains(criteria))
+        {
+            throw new CriteriaAlreadyExistsException(criteria.Description);
+        }
+        _criteriaList.Add(criteria);
+    }
+
     public void Remove(Condition condition)
     {
-        _conditionList.Remove(condition);
-        //delete condition
-        //TODO:
+        if (!_conditionList.Contains(condition))
+        {
+            throw new ConditionAlreadyDoesNotExistException(condition.Description);
+        }
+        _conditionList.Remove(condition);        
     }
-    
-    public void Remove(VisaRequirement visaRequirement)
+
+    public void Remove(Requirement requirement)
     {
-        _visaRequirementList.Remove(visaRequirement);
-        //delete requirement
-        //TODO:
+        if (!_requirementList.Contains(requirement))
+        {
+            throw new RequirementAlreadyDoesNotExistException(requirement.Description);
+        }
+        _requirementList.Remove(requirement);
     }
-  
+
     public void Remove(Criteria criteria)
     {
+        if (!_criteriaList.Contains(criteria))
+        {
+            throw new CriteriaAlreadyDoesNotExistException(criteria.Description);
+        }
         _criteriaList.Remove(criteria);
-        //delete criteria
-        //TODO:
     }
 
     public void GetSuspended(string reason)
@@ -123,8 +140,8 @@ public sealed class Visa : AggregateRoot<VisaId>
         _visaSuspended.GetSuspended(reason);
     }
     
-    public void GetOpened()
+    public void Reinsiate()
     {
-        _visaSuspended.GetOpened();
+        _visaSuspended.Reinsiate();
     }
 }

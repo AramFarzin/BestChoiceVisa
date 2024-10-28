@@ -5,7 +5,7 @@ public record Question
 {
     public string Description { get; init;} = string.Empty;
 
-    public Question(string description)
+    internal Question(string description)
     {
         if (string.IsNullOrWhiteSpace(description))
         {

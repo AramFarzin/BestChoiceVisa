@@ -1,22 +1,17 @@
+using System.Collections.Immutable;
 using Domain.ValueObjects;
 
 namespace Domain.Factories
 {
     internal class ConditionFactory
     {
-        internal Condition Create(string description, Question question, List<AnswerScore> asnwers, bool isRequired)
+        internal Condition Create(string conditionDescription, string questionDescription, Dictionary<string, int> answers, bool isRequired)
         {
-            // Question needs to be created
-            // QuestionFactory.Create(question);
+            Condition condition = new Condition(conditionDescription, questionDescription, ToAnswerScoreList(answers), isRequired);
 
-            // Answerscore needs to be created and added
-            // foreach (AnswerScore answerScore in condition.Answers)
-            // {
-            // condition.AddAnswerAsync(answerScore);           
-            // }
-            // Logic for creating a valid Condition
-            // return new Condition(description, question, asnwers, isRequired);
-            throw new Exception();
+            return condition;
         }
+
+        private static ImmutableArray<AnswerScore> ToAnswerScoreList(Dictionary<string, int> pairs) => pairs.Select(p=> new AnswerScore(p.Key,p.Value)).ToImmutableArray();
     }
 }

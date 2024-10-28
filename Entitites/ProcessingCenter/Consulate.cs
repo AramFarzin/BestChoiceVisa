@@ -4,7 +4,7 @@ using Domain.ValueObjects;
 namespace Domain.Entities;
 public sealed class Consulate : ProcessingCenter
 {
-    //The consulate is related to whic embassy
+    //The consulate is related to an embassy
     [Required]
     private ProcessingCenterId _embassyId;
 
