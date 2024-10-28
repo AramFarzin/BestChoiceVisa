@@ -114,7 +114,7 @@ public sealed class Visa : AggregateRoot<VisaId>
         {
             throw new ConditionAlreadyDoesNotExistException(condition.Description);
         }
-        _conditionList.Remove(condition);        
+        _conditionList.Remove(condition);
     }
 
     public void Remove(Requirement requirement)
